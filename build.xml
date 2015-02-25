@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<project name="springapp" basedir="." default="usage">
+    <property name="src.dir" value="src/main/java"/>
+    <property name="build.dir" value="target/classes"/>
+	<property name="resources.dir" value="src/main/webapp/resources"/>
+	<property name="lib.dir" value="lib" />
+
+    <property name="name" value="dataService"/>
+
+    <path id="master-classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    	
+    	<fileset dir="${build.dir}">
+    		<include name="**/*.class"/>
+    	</fileset>
+    	
+        <pathelement path="${build.dir}"/>
+    </path>
+
+    <target name="usage">
+        <echo message=""/>
+        <echo message="${name} build file"/>
+        <echo message="-----------------------------------"/>
+        <echo message=""/>
+        <echo message="Available targets are:"/>
+        <echo message=""/>
+        <echo message="build     --> Build the application"/>
+        <echo message="deploy    --> Deploy application as directory"/>
+        <echo message=""/>
+    </target>
+
+    <target name="build" description="Compile main source tree java files">
+        <mkdir dir="${build.dir}"/>
+    	<mkdir dir="${build.dir}/resources"/>
+    	
+    	<copy todir="${build.dir}/resources">
+    		<fileset dir="${resources.dir}"></fileset>
+    	</copy>
+        <javac destdir="${build.dir}" source="1.6" target="1.6" debug="true"
+               deprecation="false" optimize="false" failonerror="true">
+            <src path="${src.dir}"/>
+            <classpath refid="master-classpath"/>
+        </javac>
+    </target>
+
+    <target name="deploy" depends="build" description="Deploy application">
+		<java fork="true" classname="app.Application">
+			<classpath refid="master-classpath" />
+		</java>
+    </target>
+	
+	<target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="${build.dir}" />
+		</delete>
+	</target>
+
+    
+</project>
